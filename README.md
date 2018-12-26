@@ -1,6 +1,9 @@
 ReservableSpots allows you to create a reservable spot anywhere in the map, if you are able to edit the map and add the entity.
 
+Bugs will be fixed if reported, in a time frame at least.
+
 Chat commands:
+
 !claim ID ( Claims the requested spot if everything is a-ok )
 
 !unclaim ( Unclaims a spot if you own it ( Does not require ID ))
@@ -10,15 +13,24 @@ Chat commands:
 !refreshfriends ( Rechecks your friends list ( Prop protection buddy list ) and adds or removes them to your spot if you own one. )
 
 F.A.Q.
+
 Q: Does this support buddy lists? A: Yes.
-Q: Will a 500 prop car being removed lag the server? A: Depends on the server. 
+
+Q: Will a 500 prop car being removed lag the server? A: Depends on the server.
+ 
 Q: What do I need to use this addon? A: A CPPI complient prop protection, and a map with the entities.
-Q: Who all made this addon? A: I (Bkamahl/BabyBear) single handedly coded this addon with the help of the Gmod Wiki and some Facepunch threads.
+
+Q: Who all made this addon? A: I (Bkamahl/BabyBear) single handedly coded this addon with the help of the Gmod Wiki and some 
+Facepunch threads.
+
 Q: Why did you make this? A: So people on advanced building servers can't be annoyed while building, if they wanted. 
+
 Q: Where do I report bugs? A: Either make an issue on GitHub or contact me on Steam(id/Bkamahl) or Discord(BabyBear#5785).
+
 Q: What is the entity called? A: "reservableroom".
 
 Instructions:
+
 In hammer, on your map, create a block with the tools/toolstrigger texture
 
 While the block is selected use Ctrl + T to create an entity
