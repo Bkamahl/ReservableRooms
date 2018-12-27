@@ -1,8 +1,7 @@
-local IgnoredPropsClass = {"gmod_button", "prop_door_rotating", "func_door", "func_viscluster", "info_player_start", "func_detail", "trigger_teleport", "prop_static", "npc_grenade_bugbait", "npc_grenade_frag", "worldspawn", "reservableroom", "physgun_beam" }
+local IgnoredPropsClass = {"gmod_button", "prop_door_rotating", "func_door", "func_viscluster", "info_player_start", "func_detail", "trigger_teleport", "prop_static", "npc_grenade_bugbait", "npc_grenade_frag", "reservableroom", "physgun_beam" }
 local ReservableRooms = {} -- Create a table for the RID keys and ents
 
 local IOwnAnotherRoom = false
-local ranFromClaimed = false
 local whatsInTheBoxCount = 0
 
 function sendMsgToPlayer( ply, text )
@@ -31,12 +30,12 @@ local function doIAlreadyOwnARoom( ply )
 	end
 end
 
-local function refreshPlyFriends( ply, ranFromClaimed, ent )
+local function refreshPlyFriends( ply, ent )
 	-- Yes I know P goes after E, but it will cause problems the other way arround
 	local plyFriends = ply:CPPIGetFriends()
 	table.insert(plyFriends, ply) -- Add the player so that we don't remove them later on
 	
-	if ranFromClaimed == true then -- If this came from !claim then
+	if ent != nil then
 		local claimedPlayers = ent:GetVar("ClaimedPlayers", {})
 		
 		for k, v in pairs( plyFriends ) do -- for every friend
@@ -53,7 +52,6 @@ local function refreshPlyFriends( ply, ranFromClaimed, ent )
 			end
 		end
 		
-		ranFromClaimed = false
 		ent:SetVar("ClaimedPlayers", claimedPlayers)
 	else -- If it came from !refreshfriends
 		local didIRefresh = false
@@ -80,11 +78,11 @@ local function refreshPlyFriends( ply, ranFromClaimed, ent )
 			end
 		end
 		if didIRefresh == true then sendMsgToPlayer( ply, "You have refreshed the allowed players in your room.")
-		else sendMsgToPlayer( ply, "You either do not own a room or something else is wrong.") end
+		else sendMsgToPlayer( ply, "You do not own a room.") end
 	end
 end
 
-local function whatsInTheBox( ent, vC1, vC2 )
+local function whatsInTheBox( ent )
 	local whatsInTheBox = ents.FindInBox(ent:OBBMins(), ent:OBBMaxs())
 	whatsInTheBoxCount = 0
 	
@@ -105,15 +103,13 @@ local function claimReservableRoom( ply, id )
 			if table.Count(claimedPlayers) == 0 then
 				whatsInTheBox(ent)
 				if whatsInTheBoxCount == 0 then
-					ranFromClaimed = true
 					table.insert(claimedPlayers, ply)
 					ent:SetVar("ClaimedPlayers", claimedPlayers)
-					refreshPlyFriends( ply, ranFromClaimed, ent ) -- Add the player's friends
+					refreshPlyFriends( ply, ent ) -- Add the player's friends
 					sendMsgToPlayer( ply, "You have successfully claimed room " .. id)
 				else sendMsgToPlayer( ply, "There is something or someone inside the area.") end
 			else sendMsgToPlayer( ply, claimedPlayers[1]:GetName() .. " already claimed this room.") end
 		else sendMsgToPlayer( ply, "You already claimed another room.") end
-		ranFromClaimed = false -- Extra sure that it goes back to being false for next run
 	else sendMsgToPlayer( ply, "Pleae provide a valid room ID.") end
 end
 

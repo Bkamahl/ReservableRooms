@@ -46,3 +46,5 @@ Then create a key called "RID" ( All caps ), then give it a value between 1 (one
 V1: First addon release
 
 V2: Added fancy feedback, and optimized PlayerSay hook and entire system with a table.
+
+V3: Removed useless args from whatsinthebox function, made feedback for !refreshfriends more straight forward, removed useless "worldspawn" from ignoredprops, and shortened/optimized entire code by remove entire "ranfromclaimed" system that was replaced with if ent != nil that did not work before as of other bugs that were fixed before addon release.

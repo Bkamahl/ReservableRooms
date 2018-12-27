@@ -1,7 +1,7 @@
 ENT.Type = "brush" -- Need to basic define entity, server ent, no need for client or shared
 ENT.Base = "base_gmodentity" -- Ent base
 
-local IgnoredPropsClass = {"gmod_button", "prop_door_rotating", "func_door", "func_viscluster", "info_player_start", "func_detail", "trigger_teleport", "prop_static", "npc_grenade_bugbait", "npc_grenade_frag", "worldspawn", "reservableroom", "physgun_beam" }
+local IgnoredPropsClass = {"gmod_button", "prop_door_rotating", "func_door", "func_viscluster", "info_player_start", "func_detail", "trigger_teleport", "prop_static", "npc_grenade_bugbait", "npc_grenade_frag", "reservableroom", "physgun_beam" }
 
 function ENT:Initialize() -- Start enttiy init
     self:SetSolid(SOLID_BBOX) -- No idea what BBOX is, uh, idk, it works, all that matters
