@@ -11,6 +11,7 @@ end
 local function itWasAPlayer(ent, claimedPlayers)
 	if !table.HasValue(claimedPlayers, ent) then
 		ent:Kill()
+		ent:SendLua("chat.AddText(Color(255,0,255),\"[ReservableRooms] \", Color(255,255,255),\"You are not allowed in this room.\")")
 	end
 end
 

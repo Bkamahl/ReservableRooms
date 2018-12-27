@@ -1,6 +1,8 @@
-ReservableSpots allows you to create a reservable spot anywhere in the map, if you are able to edit the map and add the entity.
+ReservableRooms allows you to create a reservable spot anywhere in the map, if you are able to edit the map and add the entity.
 
 Bugs will be fixed if reported, in a time frame at least.
+
+To change the "[ReservableRooms]" color, find the Color() at lines 10 for the server file and 7 for the entity file.
 
 Chat commands:
 
@@ -11,6 +13,8 @@ Chat commands:
 !clear ID ( Clears the allowed player list for that spot ( Admin+ only command ))
 
 !refreshfriends ( Rechecks your friends list ( Prop protection buddy list ) and adds or removes them to your spot if you own one. )
+
+Do not claim this addon as yours.
 
 F.A.Q.
 
@@ -38,3 +42,7 @@ While the block is selected use Ctrl + T to create an entity
 Turn smart edit off and when selecting the entity class, clear and type reservableroom
 
 Then create a key called "RID" ( All caps ), then give it a value between 1 (one) through whatever number you want
+
+V1: First addon release
+
+V2: Added fancy feedback, and optimized PlayerSay hook and entire system with a table.

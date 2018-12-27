@@ -1,27 +1,32 @@
 local IgnoredPropsClass = {"gmod_button", "prop_door_rotating", "func_door", "func_viscluster", "info_player_start", "func_detail", "trigger_teleport", "prop_static", "npc_grenade_bugbait", "npc_grenade_frag", "worldspawn", "reservableroom", "physgun_beam" }
-local ReservableSpots = {} -- Create a table for the RID keys and ents
+local ReservableRooms = {} -- Create a table for the RID keys and ents
 
-local IOwnAnotherSpot = false
+local IOwnAnotherRoom = false
 local ranFromClaimed = false
 local whatsInTheBoxCount = 0
 
-local function adminClearSpot( ply, text )
-	if ply:IsAdmin() or ply:IsSuperAdmin() then
-		local id = string.sub( text, 8 )
-		local ent = ReservableSpots[id]
-		
-		ent:SetVar("ClaimedPlayers", {})
-		ply:ChatPrint("You have cleared the allowed list of spot " .. id)
-	else ply:ChatPrint("You must be admin+ to use this command!") end
+function sendMsgToPlayer( ply, text )
+    ply:SendLua("chat.AddText(Color(255,0,255),\"[ReservableRooms] \", Color(255,255,255),\"" .. text .. "\")")
 end
 
-local function doIAlreadyOwnASpot( ply )
-	IOwnAnotherSpot = false
-	for k, v in pairs( ReservableSpots ) do
+local function adminClearRoom( ply, id )
+	if ply:IsAdmin() or ply:IsSuperAdmin() then
+		if isnumber( tonumber(id) ) then
+			local ent = ReservableRooms[id]
+			
+			ent:SetVar("ClaimedPlayers", {})
+			sendMsgToPlayer( ply, "You have cleared the allowed player list of room " .. id .. ".")
+		else sendMsgToPlayer( ply, "Please provide a valid room ID.") end
+	else sendMsgToPlayer( ply, "You must be admin+ to use this command!") end
+end
+
+local function doIAlreadyOwnARoom( ply )
+	IOwnAnotherRoom = false
+	for k, v in pairs( ReservableRooms ) do
 		local claimedPlayers = v:GetVar("ClaimedPlayers", {})
 		
 		if ply == claimedPlayers[1] then
-			IOwnAnotherSpot = true
+			IOwnAnotherRoom = true
 		end
 	end
 end
@@ -52,7 +57,7 @@ local function refreshPlyFriends( ply, ranFromClaimed, ent )
 		ent:SetVar("ClaimedPlayers", claimedPlayers)
 	else -- If it came from !refreshfriends
 		local didIRefresh = false
-		for k, v in pairs( ReservableSpots ) do
+		for k, v in pairs( ReservableRooms ) do
 			local claimedPlayers = v:GetVar("ClaimedPlayers", {})
 			
 			if claimedPlayers[1] == ply then
@@ -74,8 +79,8 @@ local function refreshPlyFriends( ply, ranFromClaimed, ent )
 				v:SetVar("ClaimedPlayers", claimedPlayers)
 			end
 		end
-		if didIRefresh == true then ply:ChatPrint("You have refreshed the allowed players in your spot.")
-		else ply:ChatPrint("You either do not own a spot or something else is wrong.") end
+		if didIRefresh == true then sendMsgToPlayer( ply, "You have refreshed the allowed players in your room.")
+		else sendMsgToPlayer( ply, "You either do not own a room or something else is wrong.") end
 	end
 end
 
@@ -90,14 +95,13 @@ local function whatsInTheBox( ent, vC1, vC2 )
 	end
 end
 
-local function claimReservableSpot( ply, text )
-	local id = string.sub( text, 8 )
-	if id != "" then -- If they didn't just type !claim
-		local ent = ReservableSpots[id]
+local function claimReservableRoom( ply, id )
+	if isnumber( tonumber(id) ) then
+		local ent = ReservableRooms[id]
 		local claimedPlayers = ent:GetVar("ClaimedPlayers", {})
 		
-		doIAlreadyOwnASpot(ply)
-		if IOwnAnotherSpot == false then
+		doIAlreadyOwnARoom(ply)
+		if IOwnAnotherRoom == false then
 			if table.Count(claimedPlayers) == 0 then
 				whatsInTheBox(ent)
 				if whatsInTheBoxCount == 0 then
@@ -105,41 +109,47 @@ local function claimReservableSpot( ply, text )
 					table.insert(claimedPlayers, ply)
 					ent:SetVar("ClaimedPlayers", claimedPlayers)
 					refreshPlyFriends( ply, ranFromClaimed, ent ) -- Add the player's friends
-					ply:ChatPrint("You have successfully claimed spot " .. id)
-				else ply:ChatPrint("There is something or someone inside the area.") end
-			else ply:ChatPrint(claimedPlayers[1]:GetName() .. " already claimed this spot.") end
-		else ply:ChatPrint("You already claimed another spot.") end
+					sendMsgToPlayer( ply, "You have successfully claimed room " .. id)
+				else sendMsgToPlayer( ply, "There is something or someone inside the area.") end
+			else sendMsgToPlayer( ply, claimedPlayers[1]:GetName() .. " already claimed this room.") end
+		else sendMsgToPlayer( ply, "You already claimed another room.") end
 		ranFromClaimed = false -- Extra sure that it goes back to being false for next run
-	else ply:ChatPrint("Pleae provide a spot ID.") end
+	else sendMsgToPlayer( ply, "Pleae provide a valid room ID.") end
 end
 
-local function unclaimReservableSpot( ply )
-	for k, v in pairs( ReservableSpots ) do
+local function unclaimReservableRoom( ply )
+	local IWasCalledBefore = 0
+	for k, v in pairs( ReservableRooms ) do
 		local claimedPlayers = v:GetVar("ClaimedPlayers", {})
 		
 		if claimedPlayers[1] == ply then
 			v:SetVar("ClaimedPlayers", {})
-			ply:ChatPrint("You have unclaimed your spot.")
-		end
+			sendMsgToPlayer( ply, "You have unclaimed your room.")
+		else IWasCalledBefore = IWasCalledBefore + 1 end
+	end
+	if IWasCalledBefore == table.Count(ReservableRooms) then
+		sendMsgToPlayer( ply, "You do not own a room.")
 	end
 end
 
 hook.Add( "PlayerSay", "claimreservableroom", function( ply, text )
-	if ( string.sub( string.lower( text ), 1, 6 ) == "!claim" ) then claimReservableSpot( ply, text ) end
-	if ( string.sub( string.lower( text ), 1, 6 ) == "!clear" ) then adminClearSpot( ply, text ) end
-	if ( string.sub( string.lower( text ), 1, 15 ) == "!refreshfriends" ) then refreshPlyFriends( ply ) end
-	if ( string.sub( string.lower( text ), 1, 8 ) == "!unclaim" ) then unclaimReservableSpot( ply ) end
+	local cmd = string.Split(string.lower(text)," ")
+	
+	if cmd[1] == "!claim" then claimReservableRoom( ply, cmd[2] ) end
+	if cmd[1] == "!clear" then adminClearRoom( ply, cmd[2] ) end
+	if cmd[1] == "!refreshfriends" then refreshPlyFriends( ply ) end
+	if cmd[1] == "!unclaim" then unclaimReservableRoom( ply ) end
 end)
 
 hook.Add( "EntityKeyValue", "reservableroomfind", function( ent, key, value )
 	-- Find and apply the RID keys and the ent to a table for future ref
 	if(ent:GetClass() == "reservableroom" && key == "RID") then 
-		ReservableSpots[value] = ent
+		ReservableRooms[value] = ent
 	end
 end)
 
 hook.Add( "PlayerDisconnected", "unclaimWhenDC", function( ply )
-	for k, v in pairs( ReservableSpots ) do
+	for k, v in pairs( ReservableRooms ) do
 		local claimedPlayers = v:GetVar("ClaimedPlayers", {})
 		
 		if claimedPlayers[1] == ply then
