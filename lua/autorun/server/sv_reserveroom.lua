@@ -10,7 +10,7 @@ end
 
 local function adminClearRoom( ply, id )
 	if ply:IsAdmin() or ply:IsSuperAdmin() then
-		if isnumber( tonumber(id) ) then
+		if isnumber( tonumber(id) ) && table.HasValue(table.GetKeys(ReservableRooms), id) then
 			local ent = ReservableRooms[id]
 			
 			ent:SetVar("ClaimedPlayers", {})
@@ -94,7 +94,7 @@ local function whatsInTheBox( ent )
 end
 
 local function claimReservableRoom( ply, id )
-	if isnumber( tonumber(id) ) then
+	if isnumber( tonumber(id) ) && table.HasValue(table.GetKeys(ReservableRooms), id) then
 		local ent = ReservableRooms[id]
 		local claimedPlayers = ent:GetVar("ClaimedPlayers", {})
 		
