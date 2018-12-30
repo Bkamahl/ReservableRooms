@@ -53,4 +53,6 @@ V4: Made sure entering letters or incorrect ID numbers don't cause errors and ha
 
 V5: Fixed not being able to claim room while being inside of room, even if your friend is in the room, alphabetically ordered hooks, and added auto friend refresh for every room owner if there is an owner, default is 2 minutes, variable is changable.
 
-V6 plans are to check if player has not been in the room for a certain amount of time, and if not to unclaim that room.
+V6: Changed default refresh timer to 2.5 for MG, removed some useless brackets in some if statements, and completely fixed autoRefresh and made it's own function for it.
+
+V7 plans are to check if player has not been in the room for a certain amount of time, and if not to unclaim that room.

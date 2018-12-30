@@ -2,7 +2,8 @@ local IgnoredPropsClass = {"gmod_button", "prop_door_rotating", "func_door", "fu
 local ReservableRooms = {} -- Create a table for the RID keys and ents
 
 local IOwnAnotherRoom = false
-local refreshFriendsTimer = 120 -- Time in seconds to wait before refreshing every room's owner's friends if there is an owner
+local otherFunctionsAreRunning = false -- Using this var as a way to prevent auto refresh from breaking things just in case
+local refreshFriendsTimer = 2.5 -- Time in seconds to wait before refreshing every room's owner's friends if there is an owner
 local whatsInTheBoxCount = 0
 
 function sendMsgToPlayer( ply, text )
@@ -32,7 +33,10 @@ local function doIAlreadyOwnARoom( ply )
 end
 
 local function refreshPlyFriends( ply, ent )
+	otherFunctionsAreRunning = true
 	-- Yes I know P goes after E, but it will cause problems the other way around
+	local plyFriends = ply:CPPIGetFriends()
+	table.insert(plyFriends, ply) -- Add the player so that we don't remove them later on
 	
 	if ent != nil then
 		local plyFriends = ply:CPPIGetFriends()
@@ -40,23 +44,21 @@ local function refreshPlyFriends( ply, ent )
 		local claimedPlayers = ent:GetVar("ClaimedPlayers", {})
 		
 		for k, v in pairs( plyFriends ) do -- for every friend
-			if (!table.HasValue(claimedPlayers, v)) then -- if not allowed
+			if !table.HasValue(claimedPlayers, v) then -- if not allowed
 				table.insert(claimedPlayers, v) -- Add friends
 			end
 		end
 		
 		if claimedPlayers != plyFriends then -- If the allowed list is not the same as the players friends and self
 			for k, v in pairs(claimedPlayers) do
-				if(!table.HasValue(plyFriends, v)) then
+				if!table.HasValue(plyFriends, v) then
 					table.RemoveByValue(claimedPlayers, v) -- Remove the people that aren't friends
 				end
 			end
 		end
 		
 		ent:SetVar("ClaimedPlayers", claimedPlayers)
-	elseif ply != nil then -- If it came from !refreshfriends
-		local plyFriends = ply:CPPIGetFriends()
-		table.insert(plyFriends, ply) -- Add the player so that we don't remove them later on
+	else -- If it came from !refreshfriends
 		local didIRefresh = false
 		for k, v in pairs( ReservableRooms ) do
 			local claimedPlayers = v:GetVar("ClaimedPlayers", {})
@@ -64,7 +66,7 @@ local function refreshPlyFriends( ply, ent )
 			if claimedPlayers[1] == ply then
 				didIRefresh = true
 				for k, v in pairs( plyFriends ) do -- for every friend
-					if (!table.HasValue(claimedPlayers, v)) then -- if not allowed
+					if!table.HasValue(claimedPlayers, v) then -- if not allowed
 						table.insert(claimedPlayers, v) -- Add friends
 					end
 				end
@@ -72,7 +74,7 @@ local function refreshPlyFriends( ply, ent )
 			
 				if claimedPlayers != plyFriends then -- If the allowed list is not the same as the players friends and self
 					for k, v in pairs(claimedPlayers) do
-						if(!table.HasValue(plyFriends, v)) then
+						if!table.HasValue(plyFriends, v) then
 							table.RemoveByValue(claimedPlayers, v) -- Remove the people that aren't friends
 						end
 					end
@@ -82,22 +84,28 @@ local function refreshPlyFriends( ply, ent )
 		end
 		if didIRefresh == true then sendMsgToPlayer( ply, "You have refreshed the allowed players in your room.")
 		else sendMsgToPlayer( ply, "You do not own a room.") end
-	else
+	end
+	otherFunctionsAreRunning = false
+end
+
+local function timerRefreshFriends()
+	if otherFunctionsAreRunning != true then
 		for k, v in pairs( ReservableRooms ) do
 			local claimedPlayers = v:GetVar("ClaimedPlayers", {})
 			
 			if table.Count(claimedPlayers) != 0 then
-				local plyFriends2 = claimedPlayers[1]:CPPIGetFriends()
+				local plyFriends = claimedPlayers[1]:CPPIGetFriends()
+				table.insert(plyFriends, claimedPlayers[1]) -- Add the player so that we don't remove them later on
 				
-				for k, v in pairs( plyFriends2 ) do -- for every friend
-					if (!table.HasValue(claimedPlayers, v)) then -- if not allowed
+				for k, v in pairs( plyFriends ) do -- for every friend
+					if !table.HasValue(claimedPlayers, v) then -- if not allowed
 						table.insert(claimedPlayers, v) -- Add friends
 					end
 				end
 				
-				if claimedPlayers != plyFriends2 then -- If the allowed list is not the same as the players friends and self
+				if claimedPlayers != plyFriends then -- If the allowed list is not the same as the players friends and self
 					for k, v in pairs(claimedPlayers) do
-						if(!table.HasValue(plyFriends2, v)) then
+						if !table.HasValue(plyFriends, v) then
 							table.RemoveByValue(claimedPlayers, v) -- Remove the people that aren't friends
 						end
 					end
@@ -105,11 +113,12 @@ local function refreshPlyFriends( ply, ent )
 				v:SetVar("ClaimedPlayers", claimedPlayers)
 			end
 		end
-		timer.Simple(refreshFriendsTimer, refreshPlyFriends)
-	end
+		timer.Simple(refreshFriendsTimer, timerRefreshFriends)
+	else timer.Simple(refreshFriendsTimer, timerRefreshFriends) end
 end
 
 local function whatsInTheBox( ent, ply )
+	otherFunctionsAreRunning = true
 	local whatsInTheBox = ents.FindInBox(ent:OBBMins(), ent:OBBMaxs())
 	whatsInTheBoxCount = 0
 	
@@ -119,16 +128,18 @@ local function whatsInTheBox( ent, ply )
 				local plyFriends = ply:CPPIGetFriends()
 				if whatsInTheBox[i] != ply then
 					-- For some reason using or doesnt want to work here so I have to make it 2 if statements
-					if table.HasValue(plyFriends, whatsInTheBox[i]) != true then
+					if !table.HasValue(plyFriends, whatsInTheBox[i]) then
 						whatsInTheBoxCount = whatsInTheBoxCount + 1
 					end
 				end
 			else whatsInTheBoxCount = whatsInTheBoxCount + 1 end
 		end
 	end
+	otherFunctionsAreRunning = false
 end
 
 local function claimReservableRoom( ply, id )
+	otherFunctionsAreRunning = true
 	if isnumber( tonumber(id) ) && table.HasValue(table.GetKeys(ReservableRooms), id) then
 		local ent = ReservableRooms[id]
 		local claimedPlayers = ent:GetVar("ClaimedPlayers", {})
@@ -146,9 +157,11 @@ local function claimReservableRoom( ply, id )
 			else sendMsgToPlayer( ply, claimedPlayers[1]:GetName() .. " already claimed this room.") end
 		else sendMsgToPlayer( ply, "You already claimed another room.") end
 	else sendMsgToPlayer( ply, "Pleae provide a valid room ID.") end
+	otherFunctionsAreRunning = false
 end
 
 local function unclaimReservableRoom( ply )
+	otherFunctionsAreRunning = true
 	local IWasCalledBefore = 0
 	for k, v in pairs( ReservableRooms ) do
 		local claimedPlayers = v:GetVar("ClaimedPlayers", {})
@@ -161,6 +174,7 @@ local function unclaimReservableRoom( ply )
 	if IWasCalledBefore == table.Count(ReservableRooms) then
 		sendMsgToPlayer( ply, "You do not own a room.")
 	end
+	otherFunctionsAreRunning = false
 end
 
 hook.Add( "EntityKeyValue", "reservableroomfind", function( ent, key, value )
@@ -171,7 +185,7 @@ hook.Add( "EntityKeyValue", "reservableroomfind", function( ent, key, value )
 end)
 
 hook.Add( "Initialize", "refreshPlyFriendsHook", function()
-	timer.Simple( refreshFriendsTimer, refreshPlyFriends)
+	timer.Simple(refreshFriendsTimer, timerRefreshFriends)
 end)
 
 hook.Add( "PlayerDisconnected", "unclaimWhenDC", function( ply )
