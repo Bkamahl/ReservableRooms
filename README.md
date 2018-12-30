@@ -51,6 +51,6 @@ V3: Removed useless args from whatsinthebox function, made feedback for !refresh
 
 V4: Made sure entering letters or incorrect ID numbers don't cause errors and have feedback alerting user if it's incorrect.
 
-V5: Fixed not being able to claim room while being inside of room, even if your friend is in the room, and added auto friend refresh for every room owner if there is an owner, default is 2 minutes, variable is changable.
+V5: Fixed not being able to claim room while being inside of room, even if your friend is in the room, alphabetically ordered hooks, and added auto friend refresh for every room owner if there is an owner, default is 2 minutes, variable is changable.
 
 V6 plans are to check if player has not been in the room for a certain amount of time, and if not to unclaim that room.
