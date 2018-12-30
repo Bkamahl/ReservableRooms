@@ -1,7 +1,7 @@
 ENT.Type = "brush" -- Need to basic define entity, server ent, no need for client or shared
 ENT.Base = "base_gmodentity" -- Ent base
 
-local IgnoredPropsClass = {"gmod_button", "prop_door_rotating", "func_door", "func_viscluster", "info_player_start", "func_detail", "trigger_teleport", "prop_static", "npc_grenade_bugbait", "npc_grenade_frag", "reservableroom", "physgun_beam" }
+local IgnoredPropsClass = {"gmod_button", "prop_door_rotating", "func_door", "func_viscluster", "info_player_start", "func_detail", "trigger_teleport", "prop_static", "npc_grenade_bugbait", "npc_grenade_frag", "reservableroom", "physgun_beam", "predicted_viewmodel" }
 
 function ENT:Initialize() -- Start enttiy init
     self:SetSolid(SOLID_BBOX) -- No idea what BBOX is, uh, idk, it works, all that matters
@@ -11,7 +11,7 @@ end
 local function itWasAPlayer(ent, claimedPlayers)
 	if !table.HasValue(claimedPlayers, ent) then
 		ent:Kill()
-		ent:SendLua("chat.AddText(Color(255,0,255),\"[ReservableRooms] \", Color(255,255,255),\"You are not allowed in this room.\")")
+		ent:SendLua("chat.AddText(Color(255,0,255),\"[ReservableRooms] \", Color(255,255,255),\"You are not allowed in " .. claimedPlayers[1]:GetName() .. "'s room.\")")
 	end
 end
 

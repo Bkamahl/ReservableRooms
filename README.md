@@ -50,3 +50,7 @@ V2: Added fancy feedback, and optimized PlayerSay hook and entire system with a 
 V3: Removed useless args from whatsinthebox function, made feedback for !refreshfriends more straight forward, removed useless "worldspawn" from ignoredprops, and shortened/optimized entire code by remove entire "ranfromclaimed" system that was replaced with if ent != nil that did not work before as of other bugs that were fixed before addon release.
 
 V4: Made sure entering letters or incorrect ID numbers don't cause errors and have feedback alerting user if it's incorrect.
+
+V5: Fixed not being able to claim room while being inside of room, even if your friend is in the room, and added auto friend refresh for every room owner if there is an owner, default is 2 minutes, variable is changable.
+
+V6 plans are to check if player has not been in the room for a certain amount of time, and if not to unclaim that room.
