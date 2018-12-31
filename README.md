@@ -55,4 +55,6 @@ V5: Fixed not being able to claim room while being inside of room, even if your 
 
 V6: Changed default refresh timer to 2.5 for MG, removed some useless brackets in some if statements, and completely fixed autoRefresh and made it's own function for it.
 
-V7 plans are to check if player has not been in the room for a certain amount of time, and if not to unclaim that room.
+V7: Removed some useless brackets, and removed a couple lines that could possibly cause some rare problems.
+
+V8 plans are to check if player has not been in the room for a certain amount of time, and if not to unclaim that room.

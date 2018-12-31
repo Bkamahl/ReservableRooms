@@ -11,6 +11,7 @@ function sendMsgToPlayer( ply, text )
 end
 
 local function adminClearRoom( ply, id )
+	otherFunctionsAreRunning = true
 	if ply:IsAdmin() or ply:IsSuperAdmin() then
 		if isnumber( tonumber(id) ) && table.HasValue(table.GetKeys(ReservableRooms), id) then
 			local ent = ReservableRooms[id]
@@ -19,6 +20,7 @@ local function adminClearRoom( ply, id )
 			sendMsgToPlayer( ply, "You have cleared the allowed player list of room " .. id .. ".")
 		else sendMsgToPlayer( ply, "Please provide a valid room ID.") end
 	else sendMsgToPlayer( ply, "You must be admin+ to use this command!") end
+	otherFunctionsAreRunning = false
 end
 
 local function doIAlreadyOwnARoom( ply )
@@ -39,8 +41,6 @@ local function refreshPlyFriends( ply, ent )
 	table.insert(plyFriends, ply) -- Add the player so that we don't remove them later on
 	
 	if ent != nil then
-		local plyFriends = ply:CPPIGetFriends()
-		table.insert(plyFriends, ply) -- Add the player so that we don't remove them later on
 		local claimedPlayers = ent:GetVar("ClaimedPlayers", {})
 		
 		for k, v in pairs( plyFriends ) do -- for every friend
@@ -66,7 +66,7 @@ local function refreshPlyFriends( ply, ent )
 			if claimedPlayers[1] == ply then
 				didIRefresh = true
 				for k, v in pairs( plyFriends ) do -- for every friend
-					if!table.HasValue(claimedPlayers, v) then -- if not allowed
+					if !table.HasValue(claimedPlayers, v) then -- if not allowed
 						table.insert(claimedPlayers, v) -- Add friends
 					end
 				end
