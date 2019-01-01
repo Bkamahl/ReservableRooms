@@ -1,4 +1,4 @@
-local IgnoredPropsClass = {"gmod_button", "prop_door_rotating", "func_door", "func_viscluster", "info_player_start", "func_detail", "trigger_teleport", "prop_static", "npc_grenade_bugbait", "npc_grenade_frag", "reservableroom", "physgun_beam", "predicted_viewmodel" }
+local IgnoredPropsClass = {"gmod_button", "prop_door_rotating", "func_door", "func_viscluster", "info_player_start", "func_detail", "trigger_teleport", "prop_static", "npc_grenade_bugbait", "npc_grenade_frag", "reservableroom", "physgun_beam", "predicted_viewmodel", "manipulate_flex" }
 local ReservableRooms = {} -- Create a table for the RID keys and ents
 
 local IOwnAnotherRoom = false
@@ -117,7 +117,7 @@ local function timerRefreshFriends()
 	else timer.Simple(refreshFriendsTimer, timerRefreshFriends) end
 end
 
-local function whatsInTheBox( ent, ply )
+local function whatsInTheBox( ply, ent )
 	otherFunctionsAreRunning = true
 	local whatsInTheBox = ents.FindInBox(ent:OBBMins(), ent:OBBMaxs())
 	whatsInTheBoxCount = 0
@@ -145,7 +145,7 @@ local function claimReservableRoom( ply, id )
 		doIAlreadyOwnARoom(ply)
 		if IOwnAnotherRoom == false then
 			if table.Count(claimedPlayers) == 0 then
-				whatsInTheBox(ent, ply)
+				whatsInTheBox( ply, ent )
 				if whatsInTheBoxCount == 0 then
 					table.insert(claimedPlayers, ply)
 					ent:SetVar("ClaimedPlayers", claimedPlayers)

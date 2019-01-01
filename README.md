@@ -59,4 +59,6 @@ V7: Removed some useless brackets, and removed a couple lines that could possibl
 
 V8: Replaced a couple if statements with one optimizing the check if player asking to claim is in the room hopefully fixing weird error on some servers that does not allow players to claim a room while in it.
 
-V9 plans are to check if player has not been in the room for a certain amount of time, and if not to unclaim that room.
+V9: Added ent from face poser tool to ignored list as it blocked players from claiming room while inside of it.
+
+V10 plans are to check if player has not been in the room for a certain amount of time, and if not to unclaim that room.
