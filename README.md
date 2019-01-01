@@ -57,4 +57,6 @@ V6: Changed default refresh timer to 2.5 for MG, removed some useless brackets i
 
 V7: Removed some useless brackets, and removed a couple lines that could possibly cause some rare problems.
 
-V8 plans are to check if player has not been in the room for a certain amount of time, and if not to unclaim that room.
+V8: Replaced a couple if statements with one optimizing the check if player asking to claim is in the room hopefully fixing weird error on some servers that does not allow players to claim a room while in it.
+
+V9 plans are to check if player has not been in the room for a certain amount of time, and if not to unclaim that room.

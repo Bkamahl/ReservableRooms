@@ -126,11 +126,9 @@ local function whatsInTheBox( ent, ply )
 		if !table.HasValue(IgnoredPropsClass, whatsInTheBox[i]:GetClass()) then
 			if whatsInTheBox[i]:IsPlayer() then
 				local plyFriends = ply:CPPIGetFriends()
-				if whatsInTheBox[i] != ply then
-					-- For some reason using or doesnt want to work here so I have to make it 2 if statements
-					if !table.HasValue(plyFriends, whatsInTheBox[i]) then
-						whatsInTheBoxCount = whatsInTheBoxCount + 1
-					end
+				table.insert(plyFriends, ply)
+				if !table.HasValue(plyFriends, whatsInTheBox[i]) then
+					whatsInTheBoxCount = whatsInTheBoxCount + 1
 				end
 			else whatsInTheBoxCount = whatsInTheBoxCount + 1 end
 		end
