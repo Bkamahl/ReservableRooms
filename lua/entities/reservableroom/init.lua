@@ -1,7 +1,7 @@
 ENT.Type = "brush" -- Need to basic define entity, server ent, no need for client or shared
 ENT.Base = "base_gmodentity" -- Ent base
 
-local IgnoredPropsClass = {"gmod_button", "prop_door_rotating", "func_door", "func_viscluster", "info_player_start", "func_detail", "trigger_teleport", "prop_static", "npc_grenade_bugbait", "npc_grenade_frag", "reservableroom", "physgun_beam", "predicted_viewmodel" }
+local IgnoredPropsClass = {"gmod_button", "prop_door_rotating", "func_door", "func_viscluster", "info_player_start", "func_detail", "trigger_teleport", "prop_static", "npc_grenade_bugbait", "npc_grenade_frag", "reservableroom", "physgun_beam", "predicted_viewmodel", "manipulate_flex" }
 
 function ENT:Initialize() -- Start enttiy init
     self:SetSolid(SOLID_BBOX) -- No idea what BBOX is, uh, idk, it works, all that matters
@@ -16,8 +16,6 @@ local function itWasAPlayer(ent, claimedPlayers)
 end
 
 local function itWasAProp(ent, claimedPlayers)
-	print(ent:CPPIGetOwner())
-	print(ent:GetClass())
 	if ent:CPPIGetOwner() != nil then
 		if !table.HasValue(claimedPlayers, ent:CPPIGetOwner()) then
 			if !table.HasValue(IgnoredPropsClass, ent:GetClass()) then
