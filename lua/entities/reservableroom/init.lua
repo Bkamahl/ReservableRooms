@@ -16,9 +16,13 @@ local function itWasAPlayer(ent, claimedPlayers)
 end
 
 local function itWasAProp(ent, claimedPlayers)
-	if !table.HasValue(claimedPlayers, ent:CPPIGetOwner()) then
-		if !table.HasValue(IgnoredPropsClass, ent:GetClass()) then
-			ent:Remove()
+	print(ent:CPPIGetOwner())
+	print(ent:GetClass())
+	if ent:CPPIGetOwner() != nil then
+		if !table.HasValue(claimedPlayers, ent:CPPIGetOwner()) then
+			if !table.HasValue(IgnoredPropsClass, ent:GetClass()) then
+				ent:Remove()
+			end
 		end
 	end
 end

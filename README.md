@@ -61,4 +61,6 @@ V8: Replaced a couple if statements with one optimizing the check if player aski
 
 V9: Added ent from face poser tool to ignored list as it blocked players from claiming room while inside of it.
 
+V10: Added if not nil to start touch so that PA mirror's work and may solve issues with other addons too.
+
 V10 plans are to check if player has not been in the room for a certain amount of time, and if not to unclaim that room.
