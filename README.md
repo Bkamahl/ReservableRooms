@@ -63,4 +63,6 @@ V9: Added ent from face poser tool to ignored list as it blocked players from cl
 
 V10: Added if not nil to start touch so that PA mirror's work and may solve issues with other addons too.
 
-V10 plans are to check if player has not been in the room for a certain amount of time, and if not to unclaim that room.
+V11: Merge from WizardLizard to silently kill players instead of normally killing them leading to ragdoll and death sound.
+
+V12: Made hook names more unique to make conflict with other addons more rare, you can now only claim a room if it is empty, you are in it, or if there are props in it and they are yours.

@@ -125,12 +125,12 @@ local function whatsInTheBox( ply, ent )
 	for i = 1, #whatsInTheBox do
 		if !table.HasValue(IgnoredPropsClass, whatsInTheBox[i]:GetClass()) then
 			if whatsInTheBox[i]:IsPlayer() then
-				local plyFriends = ply:CPPIGetFriends()
-				table.insert(plyFriends, ply)
-				if !table.HasValue(plyFriends, whatsInTheBox[i]) then
-					whatsInTheBoxCount = whatsInTheBoxCount + 1
+				if whatsInTheBox[i] != ply then
+					whatsInTheBoxCount = whatsInTheBoxCount + 1 
 				end
-			else whatsInTheBoxCount = whatsInTheBoxCount + 1 end
+			elseif whatsInTheBox[i]:CPPIGetOwner() != ply then
+				whatsInTheBoxCount = whatsInTheBoxCount + 1
+			end
 		end
 	end
 	otherFunctionsAreRunning = false
@@ -175,18 +175,18 @@ local function unclaimReservableRoom( ply )
 	otherFunctionsAreRunning = false
 end
 
-hook.Add( "EntityKeyValue", "reservableroomfind", function( ent, key, value )
+hook.Add( "EntityKeyValue", "findReservableRoomsOnEntityInit", function( ent, key, value )
 	-- Find and apply the RID keys and the ent to a table for future ref
 	if(ent:GetClass() == "reservableroom" && key == "RID") then 
 		ReservableRooms[value] = ent
 	end
 end)
 
-hook.Add( "Initialize", "refreshPlyFriendsHook", function()
+hook.Add( "Initialize", "refreshPlyReservableRoomsFriendsOnT", function()
 	timer.Simple(refreshFriendsTimer, timerRefreshFriends)
 end)
 
-hook.Add( "PlayerDisconnected", "unclaimWhenDC", function( ply )
+hook.Add( "PlayerDisconnected", "unclaimReservableRoomOnDC", function( ply )
 	for k, v in pairs( ReservableRooms ) do
 		local claimedPlayers = v:GetVar("ClaimedPlayers", {})
 		
@@ -196,7 +196,7 @@ hook.Add( "PlayerDisconnected", "unclaimWhenDC", function( ply )
 	end
 end)
 
-hook.Add( "PlayerSay", "claimreservableroom", function( ply, text )
+hook.Add( "PlayerSay", "playerSayReservableRoomCommand", function( ply, text )
 	local cmd = string.Split(string.lower(text)," ")
 	
 	if cmd[1] == "!claim" then claimReservableRoom( ply, cmd[2] ) end
