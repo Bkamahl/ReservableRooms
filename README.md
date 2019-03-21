@@ -1,10 +1,12 @@
-ReservableRooms allows you to create a reservable spot anywhere in the map, if you are able to edit the map and add the entity.
+#ReservableRooms 
 
-Bugs will be fixed if reported, in a time frame at least.
+####This addon allows you to create a reservable spot anywhere in the map, if you are able to edit the map and add the entity.
 
-To change the "[ReservableRooms]" color, find the Color() at lines 10 for the server file and 7 for the entity file.
+######Bugs will be fixed if reported, in a time frame at least.
 
-Chat commands:
+######Do not claim this addon as yours.
+
+##Chat commands:
 
 !claim ID ( Claims the requested spot if everything is a-ok )
 
@@ -14,9 +16,7 @@ Chat commands:
 
 !refreshfriends ( Rechecks your friends list ( Prop protection buddy list ) and adds or removes them to your spot if you own one. )
 
-Do not claim this addon as yours.
-
-F.A.Q.
+##F.A.Q.
 
 Q: Does this support buddy lists? A: Yes.
 
@@ -33,7 +33,7 @@ Q: Where do I report bugs? A: Either make an issue on GitHub or contact me on St
 
 Q: What is the entity called? A: "reservableroom".
 
-Instructions:
+##Instructions:
 
 In hammer, on your map, create a block with the tools/toolstrigger texture
 
@@ -42,6 +42,12 @@ While the block is selected use Ctrl + T to create an entity
 Turn smart edit off and when selecting the entity class, clear and type reservableroom
 
 Then create a key called "RID" ( All caps ), then give it a value between 1 (one) through whatever number you want
+
+##Serverside Config:
+
+To change the "[ReservableRooms]" color, find the Color() at lines 10 for the server file and 7 for the entity file.
+
+##Changelog
 
 V1: First addon release
 
