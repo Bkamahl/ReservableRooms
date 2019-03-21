@@ -61,27 +61,39 @@ Then create a key called "RID" ( All caps ), then give it a value between 1 (one
 To change the "[ReservableRooms]" color, find the Color() at lines 10 for the server file and 7 for the entity file.
 
 ## Changelog
-
+```
 V1: First addon release
-
+```
+```
 V2: Added fancy feedback, and optimized PlayerSay hook and entire system with a table.
-
+```
+```
 V3: Removed useless args from whatsinthebox function, made feedback for !refreshfriends more straight forward, removed useless "worldspawn" from ignoredprops, and shortened/optimized entire code by remove entire "ranfromclaimed" system that was replaced with if ent != nil that did not work before as of other bugs that were fixed before addon release.
-
+```
+```
 V4: Made sure entering letters or incorrect ID numbers don't cause errors and have feedback alerting user if it's incorrect.
-
+```
+```
 V5: Fixed not being able to claim room while being inside of room, even if your friend is in the room, alphabetically ordered hooks, and added auto friend refresh for every room owner if there is an owner, default is 2 minutes, variable is changable.
-
+```
+```
 V6: Changed default refresh timer to 2.5 for MG, removed some useless brackets in some if statements, and completely fixed autoRefresh and made it's own function for it.
-
+```
+```
 V7: Removed some useless brackets, and removed a couple lines that could possibly cause some rare problems.
-
+```
+```
 V8: Replaced a couple if statements with one optimizing the check if player asking to claim is in the room hopefully fixing weird error on some servers that does not allow players to claim a room while in it.
-
+```
+```
 V9: Added ent from face poser tool to ignored list as it blocked players from claiming room while inside of it.
-
+```
+```
 V10: Added if not nil to start touch so that PA mirror's work and may solve issues with other addons too.
-
+```
+```
 V11: Merge from WizardLizard to silently kill players instead of normally killing them leading to ragdoll and death sound.
-
+```
+```
 V12: Made hook names more unique to make conflict with other addons more rare, you can now only claim a room if it is empty, you are in it, or if there are props in it and they are yours.
+```
