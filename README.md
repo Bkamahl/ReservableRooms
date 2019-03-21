@@ -16,7 +16,7 @@
 
 !refreshfriends ( Rechecks your friends list ( Prop protection buddy list ) and adds or removes them to your spot if you own one. )
 
-## .A.Q.
+## F.A.Q.
 
 Q: Does this support buddy lists? A: Yes.
 
