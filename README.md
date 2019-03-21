@@ -18,25 +18,32 @@
 
 ## F.A.Q.
 
-> Does this support buddy lists? 
+> Does this support buddy lists?
+
 Yes.
 
-> Will a 500 prop car being removed lag the server? 
+> Will a 500 prop car being removed lag the server?
+
 Depends on the server.
  
-> What do I need to use this addon? 
+> What do I need to use this addon?
+
 A CPPI complient prop protection, and a map with the entities.
 
-> Who made this addon? 
+> Who made this addon?
+
 I (Bkamahl/BabyBear) single handedly coded this addon with the help of the Gmod Wiki and some Facepunch threads.
 
 > Why did you make this?
+
 So people on advanced building servers can't be annoyed while building, if they wanted. 
 
-> Where do I report bugs? 
+> Where do I report bugs?
+
 Either make an issue on GitHub or contact me on Steam(id/Bkamahl) or Discord(BabyBear#5785).
 
->What is the hammer entity called? 
+>What is the hammer entity called?
+
 "reservableroom"
 
 ## Instructions:
