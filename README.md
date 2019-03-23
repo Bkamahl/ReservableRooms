@@ -6,6 +6,8 @@
 
 ###### Do not claim this addon as yours.
 
+###### Because of the way this addon works, ANY change in ANY character of the lua files will require a map change or restart.
+
 ## Chat commands:
 
 !claim ID ( Claims the requested spot if everything is a-ok )
@@ -58,7 +60,7 @@ Then create a key called "RID" ( All caps ), then give it a value between 1 (one
 
 ## Serverside Config:
 
-To change the "[ReservableRooms]" color, find the Color() at lines 10 for the server file and 7 for the entity file.
+To change the "[ReservableRooms]" color, find the Color() at lines 12 for the server file and 14 for the entity file.
 
 ## Changelog
 
@@ -85,3 +87,5 @@ V10: Added if not nil to start touch so that PA mirror's work and may solve issu
 V11: Merge from WizardLizard to silently kill players instead of normally killing them leading to ragdoll and death sound.
 
 V12: Made hook names more unique to make conflict with other addons more rare, you can now only claim a room if it is empty, you are in it, or if there are props in it and they are yours.
+
+V13: Made ReservableRooms ignore world or null owner props, added !rrv to retrieve the servers ReservableRooms version, and changed order of which ReservableRooms entity handles props.

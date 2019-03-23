@@ -1,3 +1,5 @@
+local ReservableRoomsVersion = "13"
+
 local IgnoredPropsClass = {"gmod_button", "prop_door_rotating", "func_door", "func_viscluster", "info_player_start", "func_detail", "trigger_teleport", "prop_static", "npc_grenade_bugbait", "npc_grenade_frag", "reservableroom", "physgun_beam", "predicted_viewmodel", "manipulate_flex" }
 local ReservableRooms = {} -- Create a table for the RID keys and ents
 
@@ -128,8 +130,10 @@ local function whatsInTheBox( ply, ent )
 				if whatsInTheBox[i] != ply then
 					whatsInTheBoxCount = whatsInTheBoxCount + 1 
 				end
-			elseif whatsInTheBox[i]:CPPIGetOwner() != ply then
-				whatsInTheBoxCount = whatsInTheBoxCount + 1
+			elseif !whatsInTheBox[i]:CPPIGetOwner():IsPlayer() then return else
+				if whatsInTheBox[i]:CPPIGetOwner() != ply then
+					whatsInTheBoxCount = whatsInTheBoxCount + 1
+				end
 			end
 		end
 	end
@@ -202,5 +206,6 @@ hook.Add( "PlayerSay", "playerSayReservableRoomCommand", function( ply, text )
 	if cmd[1] == "!claim" then claimReservableRoom( ply, cmd[2] ) end
 	if cmd[1] == "!clear" then adminClearRoom( ply, cmd[2] ) end
 	if cmd[1] == "!refreshfriends" then refreshPlyFriends( ply ) end
+	if cmd[1] == "!rrv" then sendMsgToPlayer( ply, ply:GetName() .. " this server is running ReservableRooms version " .. ReservableRoomsVersion .. ".") end
 	if cmd[1] == "!unclaim" then unclaimReservableRoom( ply ) end
 end)
