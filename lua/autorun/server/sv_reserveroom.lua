@@ -1,7 +1,14 @@
-local ReservableRoomsVersion = "13"
+local ReservableRoomsVersion = "14"
 
 local IgnoredPropsClass = {"gmod_button", "prop_door_rotating", "func_door", "func_viscluster", "info_player_start", "func_detail", "trigger_teleport", "prop_static", "npc_grenade_bugbait", "npc_grenade_frag", "reservableroom", "physgun_beam", "predicted_viewmodel", "manipulate_flex" }
 local ReservableRooms = {} -- Create a table for the RID keys and ents
+local ReservableRoomsDoors = {}
+
+local doorType = "func_door"
+local doorName = "garagedoor"
+local doorNumSep = "_"
+-- What to seperate the numbers and the normal name such as garagedoor_12
+-- the _ would seperate the number allowing to use the number
 
 local IOwnAnotherRoom = false
 local otherFunctionsAreRunning = false -- Using this var as a way to prevent auto refresh from breaking things just in case
@@ -26,6 +33,7 @@ local function adminClearRoom( ply, id )
 end
 
 local function doIAlreadyOwnARoom( ply )
+	otherFunctionsAreRunning = true
 	IOwnAnotherRoom = false
 	for k, v in pairs( ReservableRooms ) do
 		local claimedPlayers = v:GetVar("ClaimedPlayers", {})
@@ -34,6 +42,49 @@ local function doIAlreadyOwnARoom( ply )
 			IOwnAnotherRoom = true
 		end
 	end
+	otherFunctionsAreRunning = false
+end
+
+local function setDoorLock( ply, lou, rfs )
+	otherFunctionsAreRunning = true
+	doIAlreadyOwnARoom( ply )
+	if IOwnAnotherRoom != false then
+		for k, v in pairs( ReservableRooms ) do
+			local claimedPlayers = v:GetVar("ClaimedPlayers", {})
+		
+			if ply == claimedPlayers[1] then
+				local garageKey = tonumber(k)
+				for k, v in pairs(table.GetKeys(ReservableRoomsDoors)) do
+					if lou == 1 then
+						if tonumber(v) == garageKey then 
+							if rfs != 1 then
+								ReservableRoomsDoors[v]:Fire("lock") 
+								sendMsgToPlayer( ply, "You have successfully locked your door." )
+							else
+								ReservableRoomsDoors[v]:Fire("close")
+								ReservableRoomsDoors[v]:Fire("lock")
+							end
+						end
+					else
+						if tonumber(v) == garageKey then 
+							if rfs != 1 then
+								ReservableRoomsDoors[v]:Fire("unlock") 
+								sendMsgToPlayer( ply, "You have successfully unlocked your door." )
+							else
+								ReservableRoomsDoors[v]:Fire("close")
+								ReservableRoomsDoors[v]:Fire("unlock")
+							end
+						end
+					end
+				end
+			end
+		end
+	else 
+		if rfs != 1 then
+			sendMsgToPlayer( ply, "You don't have a reserved room." ) 
+		end
+	end
+	otherFunctionsAreRunning = false
 end
 
 local function refreshPlyFriends( ply, ent )
@@ -154,6 +205,7 @@ local function claimReservableRoom( ply, id )
 					table.insert(claimedPlayers, ply)
 					ent:SetVar("ClaimedPlayers", claimedPlayers)
 					refreshPlyFriends( ply, ent ) -- Add the player's friends
+					setDoorLock( ply, 1, 1 )
 					sendMsgToPlayer( ply, "You have successfully claimed room " .. id)
 				else sendMsgToPlayer( ply, "There is something or someone inside the area.") end
 			else sendMsgToPlayer( ply, claimedPlayers[1]:GetName() .. " already claimed this room.") end
@@ -169,6 +221,7 @@ local function unclaimReservableRoom( ply )
 		local claimedPlayers = v:GetVar("ClaimedPlayers", {})
 		
 		if claimedPlayers[1] == ply then
+			setDoorLock( ply, 2, 1 )
 			v:SetVar("ClaimedPlayers", {})
 			sendMsgToPlayer( ply, "You have unclaimed your room.")
 		else IWasCalledBefore = IWasCalledBefore + 1 end
@@ -184,6 +237,11 @@ hook.Add( "EntityKeyValue", "findReservableRoomsOnEntityInit", function( ent, ke
 	if(ent:GetClass() == "reservableroom" && key == "RID") then 
 		ReservableRooms[value] = ent
 	end
+	
+	if(ent:GetClass() == doorType && key == "targetname") then
+		local cmd = string.Split(string.lower(value), doorNumSep )
+		if cmd[1] == doorName then ReservableRoomsDoors[cmd[2]] = ent end
+	end
 end)
 
 hook.Add( "Initialize", "refreshPlyReservableRoomsFriendsOnT", function()
@@ -195,6 +253,7 @@ hook.Add( "PlayerDisconnected", "unclaimReservableRoomOnDC", function( ply )
 		local claimedPlayers = v:GetVar("ClaimedPlayers", {})
 		
 		if claimedPlayers[1] == ply then
+			setDoorLock( ply, 2, 1 )
 			v:SetVar("ClaimedPlayers", {})
 		end
 	end
@@ -205,7 +264,9 @@ hook.Add( "PlayerSay", "playerSayReservableRoomCommand", function( ply, text )
 	
 	if cmd[1] == "!claim" then claimReservableRoom( ply, cmd[2] ) end
 	if cmd[1] == "!clear" then adminClearRoom( ply, cmd[2] ) end
+	if cmd[1] == "!lockdoor" then setDoorLock( ply, 1 ) end
 	if cmd[1] == "!refreshfriends" then refreshPlyFriends( ply ) end
 	if cmd[1] == "!rrv" then sendMsgToPlayer( ply, ply:GetName() .. " this server is running ReservableRooms version " .. ReservableRoomsVersion .. ".") end
 	if cmd[1] == "!unclaim" then unclaimReservableRoom( ply ) end
+	if cmd[1] == "!unlockdoor" then setDoorLock( ply, 2 ) end
 end)

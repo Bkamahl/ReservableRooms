@@ -2,6 +2,16 @@
 
 #### This addon allows you to create a reservable spot anywhere in the map, if you are able to edit the map and add the entity.
 
+## Features:
+
+Claiming: Claiming a room, will result in you getting that room if there are no players or props that arent yours in the room.
+This also automatically adds players on your prop protection buddy list to the allowed players in the room.
+Unclaiming completely wipes the allowed players from the room, meaning it is free to claim again, no it does not delete props or anything inside.
+
+Buddies: Claiming a room will give your prop protection buddy list access to the room too, on most servers this means admins as well.
+
+Door locking: Doors automatically close and lock upon claiming the room with the door, doors unlock upon user confirmation or unclaiming/leaving.
+
 ###### Bugs will be fixed if reported, in a time frame at least.
 
 ###### Do not claim this addon as yours.
@@ -12,11 +22,17 @@
 
 !claim ID ( Claims the requested spot if everything is a-ok )
 
-!unclaim ( Unclaims a spot if you own it ( Does not require ID ))
-
 !clear ID ( Clears the allowed player list for that spot ( Admin+ only command ))
 
+!lockdoor ( Locks your door if you have a reserved room )
+
 !refreshfriends ( Rechecks your friends list ( Prop protection buddy list ) and adds or removes them to your spot if you own one. )
+
+!rrv ( Returns server version of ReservableRooms )
+
+!unclaim ( Unclaims a spot if you own it ( Does not require ID ))
+
+!unlockdoor ( Unlocks your door if you have a reserved room )
 
 ## F.A.Q.
 
@@ -89,3 +105,5 @@ V11: Merge from WizardLizard to silently kill players instead of normally killin
 V12: Made hook names more unique to make conflict with other addons more rare, you can now only claim a room if it is empty, you are in it, or if there are props in it and they are yours.
 
 V13: Made ReservableRooms ignore world or null owner props, added !rrv to retrieve the servers ReservableRooms version, and changed order of which ReservableRooms entity handles props.
+
+V14: Added door locking! Door automatically locks when you claim a room, use "!unlockdoor" to unlock your door and "!lockdoor" to lock your door.
