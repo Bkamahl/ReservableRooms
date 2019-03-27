@@ -76,7 +76,7 @@ Then create a key called "RID" ( All caps ), then give it a value between 1 (one
 
 ## Serverside Config:
 
-To change the "[ReservableRooms]" color, find the Color() at lines 12 for the server file and 14 for the entity file.
+To change the "[ReservableRooms]" color, find the Color() at lines 19 for the server file and 16 and 34 for the entity file.
 
 ## Changelog
 
@@ -107,3 +107,7 @@ V12: Made hook names more unique to make conflict with other addons more rare, y
 V13: Made ReservableRooms ignore world or null owner props, added !rrv to retrieve the servers ReservableRooms version, and changed order of which ReservableRooms entity handles props.
 
 V14: Added door locking! Door automatically locks when you claim a room, use "!unlockdoor" to unlock your door and "!lockdoor" to lock your door.
+
+V15: Organized variables in server file for a more friendly user configuration, added doorEnable variable to toggle door system, removed door close on unclaim/unlocking of door, removed useless spaces, fixed conflict between chat and door system, completely removed ignoredprops system as code ignores nill or world props and why do you want to ignore a certain players certain prop?, removed useless otherFunctionsAreRunning on some functions as it could cause errors with timer fail safe, and added message to client if they enter an unclaimed room to claim it using entity netvar and server setnetvar. Allot can be optimized currently, with what I have recently found out, but I will save that for a later update.
+
+Possible recode soon™, don't quote me on that shit. Or count on me.

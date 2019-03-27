@@ -1,11 +1,13 @@
 ENT.Type = "brush" -- Need to basic define entity, server ent, no need for client or shared
 ENT.Base = "base_gmodentity" -- Ent base
 
-local IgnoredPropsClass = {"gmod_button", "prop_door_rotating", "func_door", "func_viscluster", "info_player_start", "func_detail", "trigger_teleport", "prop_static", "npc_grenade_bugbait", "npc_grenade_frag", "reservableroom", "physgun_beam", "predicted_viewmodel", "manipulate_flex" }
+function ENT:Initialize() -- Start entity init
+	self:SetSolid(SOLID_BBOX) -- No idea what BBOX is, uh, idk, it works, all that matters
+	self:SetTrigger(true) -- Allows running things like StartTouch
+end
 
-function ENT:Initialize() -- Start enttiy init
-    self:SetSolid(SOLID_BBOX) -- No idea what BBOX is, uh, idk, it works, all that matters
-    self:SetTrigger(true) -- Allows running things like StartTouch
+function ENT:SetupDataTables()
+	self:NetworkVar( "Float", 0, "RID" )
 end
 
 local function itWasAPlayer(ent, claimedPlayers)
@@ -16,11 +18,9 @@ local function itWasAPlayer(ent, claimedPlayers)
 end
 
 local function itWasAProp(ent, claimedPlayers)
-	if !table.HasValue(IgnoredPropsClass, ent:GetClass()) then
-		if ent:CPPIGetOwner():IsPlayer() then
-			if !table.HasValue(claimedPlayers, ent:CPPIGetOwner()) then
-				ent:Remove()
-			end
+	if ent:CPPIGetOwner():IsPlayer() then
+		if !table.HasValue(claimedPlayers, ent:CPPIGetOwner()) then
+			ent:Remove()
 		end
 	end
 end
@@ -30,5 +30,7 @@ function ENT:StartTouch(ent, claimedPlayers)
 	if table.Count(claimedPlayers) != 0 then
 		if ent:IsPlayer() then itWasAPlayer(ent, claimedPlayers)
 		else itWasAProp(ent, claimedPlayers) end
+	elseif ent:IsPlayer() then
+		ent:SendLua("chat.AddText(Color(255,0,255),\"[ReservableRooms] \", Color(255,255,255),\"This room is unclaimed, if other players aren't using it, use !claim " .. self:GetRID() .. " to claim this room.\")")
 	end
 end

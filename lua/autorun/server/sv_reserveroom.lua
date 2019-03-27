@@ -1,22 +1,22 @@
-local ReservableRoomsVersion = "14"
-
-local IgnoredPropsClass = {"gmod_button", "prop_door_rotating", "func_door", "func_viscluster", "info_player_start", "func_detail", "trigger_teleport", "prop_static", "npc_grenade_bugbait", "npc_grenade_frag", "reservableroom", "physgun_beam", "predicted_viewmodel", "manipulate_flex" }
-local ReservableRooms = {} -- Create a table for the RID keys and ents
-local ReservableRoomsDoors = {}
-
+-- You can change these
+local doorEnable = true
 local doorType = "func_door"
 local doorName = "garagedoor"
 local doorNumSep = "_"
 -- What to seperate the numbers and the normal name such as garagedoor_12
 -- the _ would seperate the number allowing to use the number
-
-local IOwnAnotherRoom = false
-local otherFunctionsAreRunning = false -- Using this var as a way to prevent auto refresh from breaking things just in case
 local refreshFriendsTimer = 2.5 -- Time in seconds to wait before refreshing every room's owner's friends if there is an owner
+
+-- Try and not touch past here
+local ReservableRooms = {}
+local ReservableRoomsDoors = {}
+local ReservableRoomsVersion = 15
+local IOwnAnotherRoom = false
+local otherFunctionsAreRunning = false
 local whatsInTheBoxCount = 0
 
 function sendMsgToPlayer( ply, text )
-    ply:SendLua("chat.AddText(Color(255,0,255),\"[ReservableRooms] \", Color(255,255,255),\"" .. text .. "\")")
+	ply:SendLua("chat.AddText(Color(255,0,255),\"[ReservableRooms] \", Color(255,255,255),\"" .. text .. "\")")
 end
 
 local function adminClearRoom( ply, id )
@@ -33,7 +33,6 @@ local function adminClearRoom( ply, id )
 end
 
 local function doIAlreadyOwnARoom( ply )
-	otherFunctionsAreRunning = true
 	IOwnAnotherRoom = false
 	for k, v in pairs( ReservableRooms ) do
 		local claimedPlayers = v:GetVar("ClaimedPlayers", {})
@@ -42,11 +41,9 @@ local function doIAlreadyOwnARoom( ply )
 			IOwnAnotherRoom = true
 		end
 	end
-	otherFunctionsAreRunning = false
 end
 
 local function setDoorLock( ply, lou, rfs )
-	otherFunctionsAreRunning = true
 	doIAlreadyOwnARoom( ply )
 	if IOwnAnotherRoom != false then
 		for k, v in pairs( ReservableRooms ) do
@@ -56,9 +53,9 @@ local function setDoorLock( ply, lou, rfs )
 				local garageKey = tonumber(k)
 				for k, v in pairs(table.GetKeys(ReservableRoomsDoors)) do
 					if lou == 1 then
-						if tonumber(v) == garageKey then 
+						if tonumber(v) == garageKey then
 							if rfs != 1 then
-								ReservableRoomsDoors[v]:Fire("lock") 
+								ReservableRoomsDoors[v]:Fire("lock")
 								sendMsgToPlayer( ply, "You have successfully locked your door." )
 							else
 								ReservableRoomsDoors[v]:Fire("close")
@@ -66,25 +63,21 @@ local function setDoorLock( ply, lou, rfs )
 							end
 						end
 					else
-						if tonumber(v) == garageKey then 
+						if tonumber(v) == garageKey then
+							ReservableRoomsDoors[v]:Fire("unlock")
 							if rfs != 1 then
-								ReservableRoomsDoors[v]:Fire("unlock") 
 								sendMsgToPlayer( ply, "You have successfully unlocked your door." )
-							else
-								ReservableRoomsDoors[v]:Fire("close")
-								ReservableRoomsDoors[v]:Fire("unlock")
 							end
 						end
 					end
 				end
 			end
 		end
-	else 
+	else
 		if rfs != 1 then
-			sendMsgToPlayer( ply, "You don't have a reserved room." ) 
+			sendMsgToPlayer( ply, "You don't have a reserved room." )
 		end
 	end
-	otherFunctionsAreRunning = false
 end
 
 local function refreshPlyFriends( ply, ent )
@@ -171,24 +164,20 @@ local function timerRefreshFriends()
 end
 
 local function whatsInTheBox( ply, ent )
-	otherFunctionsAreRunning = true
 	local whatsInTheBox = ents.FindInBox(ent:OBBMins(), ent:OBBMaxs())
 	whatsInTheBoxCount = 0
 	
 	for i = 1, #whatsInTheBox do
-		if !table.HasValue(IgnoredPropsClass, whatsInTheBox[i]:GetClass()) then
-			if whatsInTheBox[i]:IsPlayer() then
-				if whatsInTheBox[i] != ply then
-					whatsInTheBoxCount = whatsInTheBoxCount + 1 
-				end
-			elseif !whatsInTheBox[i]:CPPIGetOwner():IsPlayer() then return else
-				if whatsInTheBox[i]:CPPIGetOwner() != ply then
-					whatsInTheBoxCount = whatsInTheBoxCount + 1
-				end
+		if whatsInTheBox[i]:IsPlayer() then
+			if whatsInTheBox[i] != ply then
+				whatsInTheBoxCount = whatsInTheBoxCount + 1
+			end
+		elseif !whatsInTheBox[i]:CPPIGetOwner():IsPlayer() then return else
+			if whatsInTheBox[i]:CPPIGetOwner() != ply then
+				whatsInTheBoxCount = whatsInTheBoxCount + 1
 			end
 		end
 	end
-	otherFunctionsAreRunning = false
 end
 
 local function claimReservableRoom( ply, id )
@@ -205,7 +194,7 @@ local function claimReservableRoom( ply, id )
 					table.insert(claimedPlayers, ply)
 					ent:SetVar("ClaimedPlayers", claimedPlayers)
 					refreshPlyFriends( ply, ent ) -- Add the player's friends
-					setDoorLock( ply, 1, 1 )
+					if doorEnable == true then setDoorLock( ply, 1, 1 ) end
 					sendMsgToPlayer( ply, "You have successfully claimed room " .. id)
 				else sendMsgToPlayer( ply, "There is something or someone inside the area.") end
 			else sendMsgToPlayer( ply, claimedPlayers[1]:GetName() .. " already claimed this room.") end
@@ -221,7 +210,7 @@ local function unclaimReservableRoom( ply )
 		local claimedPlayers = v:GetVar("ClaimedPlayers", {})
 		
 		if claimedPlayers[1] == ply then
-			setDoorLock( ply, 2, 1 )
+			if doorEnable == true then setDoorLock( ply, 2, 1 ) end
 			v:SetVar("ClaimedPlayers", {})
 			sendMsgToPlayer( ply, "You have unclaimed your room.")
 		else IWasCalledBefore = IWasCalledBefore + 1 end
@@ -234,13 +223,16 @@ end
 
 hook.Add( "EntityKeyValue", "findReservableRoomsOnEntityInit", function( ent, key, value )
 	-- Find and apply the RID keys and the ent to a table for future ref
-	if(ent:GetClass() == "reservableroom" && key == "RID") then 
+	if(ent:GetClass() == "reservableroom" && key == "RID") then
 		ReservableRooms[value] = ent
+		ent:SetRID(value)
 	end
 	
-	if(ent:GetClass() == doorType && key == "targetname") then
-		local cmd = string.Split(string.lower(value), doorNumSep )
-		if cmd[1] == doorName then ReservableRoomsDoors[cmd[2]] = ent end
+	if doorEnable == true then
+		if(ent:GetClass() == doorType && key == "targetname") then
+			local cmdtwo = string.Split(string.lower(value), doorNumSep )
+			if cmdtwo[1] == doorName then ReservableRoomsDoors[cmdtwo[2]] = ent end
+		end
 	end
 end)
 
@@ -253,7 +245,7 @@ hook.Add( "PlayerDisconnected", "unclaimReservableRoomOnDC", function( ply )
 		local claimedPlayers = v:GetVar("ClaimedPlayers", {})
 		
 		if claimedPlayers[1] == ply then
-			setDoorLock( ply, 2, 1 )
+			if doorEnable == true then setDoorLock( ply, 2, 1 ) end
 			v:SetVar("ClaimedPlayers", {})
 		end
 	end
@@ -264,9 +256,9 @@ hook.Add( "PlayerSay", "playerSayReservableRoomCommand", function( ply, text )
 	
 	if cmd[1] == "!claim" then claimReservableRoom( ply, cmd[2] ) end
 	if cmd[1] == "!clear" then adminClearRoom( ply, cmd[2] ) end
-	if cmd[1] == "!lockdoor" then setDoorLock( ply, 1 ) end
+	if cmd[1] == "!lockdoor" and doorEnable == true then setDoorLock( ply, 1 ) end
 	if cmd[1] == "!refreshfriends" then refreshPlyFriends( ply ) end
-	if cmd[1] == "!rrv" then sendMsgToPlayer( ply, ply:GetName() .. " this server is running ReservableRooms version " .. ReservableRoomsVersion .. ".") end
+	if cmd[1] == "!rrv" then sendMsgToPlayer( ply, "This server is running ReservableRooms version " .. ReservableRoomsVersion .. ".") end
 	if cmd[1] == "!unclaim" then unclaimReservableRoom( ply ) end
-	if cmd[1] == "!unlockdoor" then setDoorLock( ply, 2 ) end
+	if cmd[1] == "!unlockdoor" and doorEnable == true then setDoorLock( ply, 2 ) end
 end)
