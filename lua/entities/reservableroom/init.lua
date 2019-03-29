@@ -1,36 +1,40 @@
-ENT.Type = "brush" -- Need to basic define entity, server ent, no need for client or shared
-ENT.Base = "base_gmodentity" -- Ent base
+ENT.Type = "brush"
+ENT.Base = "base_gmodentity"
 
-function ENT:Initialize() -- Start entity init
-	self:SetSolid(SOLID_BBOX) -- No idea what BBOX is, uh, idk, it works, all that matters
-	self:SetTrigger(true) -- Allows running things like StartTouch
+function ENT:Initialize()
+	self:SetSolid(SOLID_BBOX)
+	self:SetTrigger(true)
 end
 
 function ENT:SetupDataTables()
+	self:NetworkVar( "Entity", 0, "DoorEnt")
+	self:NetworkVar( "Entity", 1, "Owner")
 	self:NetworkVar( "Float", 0, "RID" )
 end
 
-local function itWasAPlayer(ent, claimedPlayers)
-	if !table.HasValue(claimedPlayers, ent) then
-		ent:KillSilent()
-		ent:SendLua("chat.AddText(Color(255,0,255),\"[ReservableRooms] \", Color(255,255,255),\"You are not allowed in " .. claimedPlayers[1]:GetName() .. "'s room.\")")
-	end
-end
-
-local function itWasAProp(ent, claimedPlayers)
-	if ent:CPPIGetOwner():IsPlayer() then
-		if !table.HasValue(claimedPlayers, ent:CPPIGetOwner()) then
-			ent:Remove()
+function ENT:StartTouch(ent)
+	if IsValid(self:GetOwner()) then
+		local friends = self:GetOwner():CPPIGetFriends()
+		table.insert(friends, self:GetOwner())
+		if ent:IsPlayer() then
+			if !table.HasValue(friends, ent) then
+				net.Start( "reservableRoomUserFeedBack" )
+					net.WriteString("You are not allowed in " .. self:GetOwner():GetName() .. "'s room")
+				net.Send( ent )
+				ent:KillSilent()
+			end
+		else
+			if IsValid(ent:CPPIGetOwner()) then
+				if !table.HasValue(friends, ent:CPPIGetOwner()) then
+					ent:Remove()
+				end
+			end
 		end
-	end
-end
-
-function ENT:StartTouch(ent, claimedPlayers)
-	local claimedPlayers = self:GetVar("ClaimedPlayers", {})
-	if table.Count(claimedPlayers) != 0 then
-		if ent:IsPlayer() then itWasAPlayer(ent, claimedPlayers)
-		else itWasAProp(ent, claimedPlayers) end
-	elseif ent:IsPlayer() then
-		ent:SendLua("chat.AddText(Color(255,0,255),\"[ReservableRooms] \", Color(255,255,255),\"This room is unclaimed, if other players aren't using it, use !claim " .. self:GetRID() .. " to claim this room.\")")
+	else
+		if ent:IsPlayer() then
+			net.Start( "reservableRoomUserFeedBack" )
+				net.WriteString("This room is unclaimed, if it is not being used by another player, you can claim it with !claim " .. tostring(self:GetRID()))
+			net.Send( ent )
+		end
 	end
 end

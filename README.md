@@ -26,7 +26,7 @@ Door locking: Doors automatically close and lock upon claiming the room with the
 
 !lockdoor ( Locks your door if you have a reserved room )
 
-!refreshfriends ( Rechecks your friends list ( Prop protection buddy list ) and adds or removes them to your spot if you own one. )
+( removed )!refreshfriends ( Rechecks your friends list ( Prop protection buddy list ) and adds or removes them to your spot if you own one. )
 
 !rrv ( Returns server version of ReservableRooms )
 
@@ -74,9 +74,10 @@ Turn smart edit off and when selecting the entity class, clear and type reservab
 
 Then create a key called "RID" ( All caps ), then give it a value between 1 (one) through whatever number you want
 
-## Serverside Config:
+## Config:
 
-To change the "[ReservableRooms]" color, find the Color() at lines 19 for the server file and 16 and 34 for the entity file.
+Most of the config is in the server file, pretty obv too, uh to change the client feedback color
+open the cl_reservablerooms.lua file, pretty self explanitory.
 
 ## Changelog
 
@@ -110,4 +111,4 @@ V14: Added door locking! Door automatically locks when you claim a room, use "!u
 
 V15: Organized variables in server file for a more friendly user configuration, added doorEnable variable to toggle door system, removed door close on unclaim/unlocking of door, removed useless spaces, fixed conflict between chat and door system, completely removed ignoredprops system as code ignores nill or world props and why do you want to ignore a certain players certain prop?, removed useless otherFunctionsAreRunning on some functions as it could cause errors with timer fail safe, and added message to client if they enter an unclaimed room to claim it using entity netvar and server setnetvar. Allot can be optimized currently, with what I have recently found out, but I will save that for a later update.
 
-Possible recode soon™, don't quote me on that shit. Or count on me.
+V16: Complete recode, friends system is pretty much auto, you dont have to do anything except set your friends in your prop protection, itl work, uhhh, things are more optimized, dropped like 100 lines of code.
