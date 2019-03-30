@@ -112,3 +112,5 @@ V14: Added door locking! Door automatically locks when you claim a room, use "!u
 V15: Organized variables in server file for a more friendly user configuration, added doorEnable variable to toggle door system, removed door close on unclaim/unlocking of door, removed useless spaces, fixed conflict between chat and door system, completely removed ignoredprops system as code ignores nill or world props and why do you want to ignore a certain players certain prop?, removed useless otherFunctionsAreRunning on some functions as it could cause errors with timer fail safe, and added message to client if they enter an unclaimed room to claim it using entity netvar and server setnetvar. Allot can be optimized currently, with what I have recently found out, but I will save that for a later update.
 
 V16: Complete recode, friends system is pretty much auto, you dont have to do anything except set your friends in your prop protection, itl work, uhhh, things are more optimized, dropped like 100 lines of code.
+
+V17: Fixed some dumb things with some servers by setting a timer higher.

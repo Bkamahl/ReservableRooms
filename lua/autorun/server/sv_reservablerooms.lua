@@ -185,7 +185,7 @@ if EnableReservableRooms == true then
 
 	hook.Add( "Initialize", "startReservableRoomTimers", function()
 		if EnableDoorSystem == true then
-			timer.Simple( 1, function()
+			timer.Simple( 10, function()
 				for k, v in pairs(ReservableRoomDoorsAvailable) do
 					for ke, va in pairs(ents.FindByClass("reservableroom") ) do
 						if k == va:GetRID() then
