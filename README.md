@@ -114,3 +114,5 @@ V15: Organized variables in server file for a more friendly user configuration, 
 V16: Complete recode, friends system is pretty much auto, you dont have to do anything except set your friends in your prop protection, itl work, uhhh, things are more optimized, dropped like 100 lines of code.
 
 V17: Fixed some dumb things with some servers by setting a timer higher.
+
+V18: Remove useless arguement in checkRoomOwnerShip function, changed some variables to be more easily recognizable, and changed reserve notification to tell you how to interact with the door.

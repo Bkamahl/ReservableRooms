@@ -11,13 +11,13 @@ if EnableReservableRooms == true then
 	
 	local clientOwnsRoom = false
 	local ReservableRoomDoorsAvailable = {}
-	local ReservableRoomsVersion = 16
+	local ReservableRoomsVersion = 18
 	local TotalAmountOfReservableRooms = 0
 	local whatsInTheBoxCount = 0
 	
 	util.AddNetworkString( "reservableRoomUserFeedBack" )
 
-	local function checkRoomOwnerShip( ply, n )
+	local function checkRoomOwnerShip( ply )
 		clientOwnsRoom = false
 		local entsThatCameBackPos = 0
 		
@@ -34,25 +34,25 @@ if EnableReservableRooms == true then
 		end
 	end
 
-	local function lockReservableDoor( ply, lu, n, c )
+	local function lockReservableDoor( ply, lockUnlock, rrNotify, closeDoor )
 		if EnableDoorSystem == true then
 			checkRoomOwnerShip(ply)
 			if clientOwnsRoom == true then
 				for k, v in pairs(ents.FindByClass("reservableroom")) do
 					if v:GetOwner() == ply then
-						if lu == 1 then
-							if c == 1 then
+						if lockUnlock == 1 then
+							if closeDoor == 1 then
 								v:GetDoorEnt():Fire("close")
 							end
 							v:GetDoorEnt():Fire("lock")
-							if n != 0 then
+							if rrNotify != 0 then
 								net.Start( "reservableRoomUserFeedBack" )
 									net.WriteString("You have locked your door")
 								net.Send( ply )
 							end
 						else
 							v:GetDoorEnt():Fire("unlock")
-							if n != 0 then
+							if rrNotify != 0 then
 								net.Start( "reservableRoomUserFeedBack" )
 									net.WriteString("You have unlocked your door")
 								net.Send( ply )
@@ -91,8 +91,8 @@ if EnableReservableRooms == true then
 		end
 	end
 
-	local function reserveReservableRoom( cru, ply, id )
-		if cru == 1 then
+	local function reserveReservableRoom( reserveUnreserve, ply, id )
+		if reserveUnreserve == 1 then
 			checkRoomOwnerShip( ply )
 			if clientOwnsRoom == false then
 				if id <= TotalAmountOfReservableRooms then
@@ -104,7 +104,7 @@ if EnableReservableRooms == true then
 									v:SetOwner(ply)
 									lockReservableDoor(ply, 1, 0, 1)
 									net.Start( "reservableRoomUserFeedBack" )
-										net.WriteString("You have claimed room " .. tostring(id))
+										net.WriteString("You have claimed room " .. tostring(id) .. ", use !lockdoor or !unlockdoor to interact with your room door")
 									net.Send( ply )
 								end
 							else
@@ -124,7 +124,7 @@ if EnableReservableRooms == true then
 					net.WriteString("You already own a room")
 				net.Send( ply )
 			end
-		elseif cru == 2 then
+		elseif reserveUnreserve == 2 then
 			checkRoomOwnerShip( ply )
 			if clientOwnsRoom == true then
 				for k, v in pairs(ents.FindByClass("reservableroom")) do
