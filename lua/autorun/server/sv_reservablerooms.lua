@@ -11,7 +11,7 @@ if EnableReservableRooms == true then
 	
 	local clientOwnsRoom = false
 	local ReservableRoomDoorsAvailable = {}
-	local ReservableRoomsVersion = 18
+	local ReservableRoomsVersion = 19
 	local TotalAmountOfReservableRooms = 0
 	local whatsInTheBoxCount = 0
 	
@@ -104,7 +104,7 @@ if EnableReservableRooms == true then
 									v:SetOwner(ply)
 									lockReservableDoor(ply, 1, 0, 1)
 									net.Start( "reservableRoomUserFeedBack" )
-										net.WriteString("You have claimed room " .. tostring(id) .. ", use !lockdoor or !unlockdoor to interact with your room door")
+										net.WriteString("You have claimed room " .. tostring(id) .. ", and locked the door, use !lockdoor or !unlockdoor to interact with your room door, or use !unclaim to unclaim your room")
 									net.Send( ply )
 								end
 							else
