@@ -116,3 +116,5 @@ V16: Complete recode, friends system is pretty much auto, you dont have to do an
 V17: Fixed some dumb things with some servers by setting a timer higher.
 
 V18: Remove useless arguement in checkRoomOwnerShip function, changed some variables to be more easily recognizable, and changed reserve notification to tell you how to interact with the door.
+
+V19: Updated !claim feedback to tell you the door is already locked
