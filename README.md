@@ -1,6 +1,6 @@
 # ReservableRooms 
 
-#### This addon allows you to create a reservable spot anywhere in the map, if you are able to edit the map and add the entity.
+#### This addon allows you to create a reservable spot anywhere in the map.
 
 ## Features:
 
@@ -16,8 +16,6 @@ Door locking: Doors automatically close and lock upon claiming the room with the
 
 ###### Do not claim this addon as yours.
 
-###### Because of the way this addon works, ANY change in ANY character of the lua files will require a map change or restart.
-
 ## Chat commands:
 
 !claim ID ( Claims the requested spot if everything is a-ok )
@@ -25,8 +23,6 @@ Door locking: Doors automatically close and lock upon claiming the room with the
 !clear ID ( Clears the allowed player list for that spot ( Admin+ only command ))
 
 !lockdoor ( Locks your door if you have a reserved room )
-
-( removed )!refreshfriends ( Rechecks your friends list ( Prop protection buddy list ) and adds or removes them to your spot if you own one. )
 
 !rrv ( Returns server version of ReservableRooms )
 
@@ -46,11 +42,11 @@ Depends on the server.
  
 > What do I need to use this addon?
 
-A CPPI complient prop protection, and a map with the entities.
+A CPPI complient prop protection, and a setup map file.
 
 > Who made this addon?
 
-I (Bkamahl/BabyBear) single handedly coded this addon with the help of the Gmod Wiki and some Facepunch threads.
+I (Bkamahl/BabyBear) single handedly coded this addon with the help of the Gmod Wiki and some Facepunch threads and some friends.
 
 > Why did you make this?
 
@@ -58,26 +54,17 @@ So people on advanced building servers can't be annoyed while building, if they 
 
 > Where do I report bugs?
 
-Either make an issue on GitHub or contact me on Steam(id/Bkamahl) or Discord(BabyBear#5785).
-
->What is the hammer entity called?
-
-"reservableroom"
+Either make an issue on GitHub or contact me on Steam(id/Bkamahl).
 
 ## Instructions:
 
-In hammer, on your map, create a block with the tools/toolstrigger texture
-
-While the block is selected use Ctrl + T to create an entity
-
-Turn smart edit off and when selecting the entity class, clear and type reservableroom
-
-Then create a key called "RID" ( All caps ), then give it a value between 1 (one) through whatever number you want
+In game, as an admin or super admin use the command "addreservableroom" to add a reservable room.
+The command arguements are addreservableroom ROOMNUMBER Vec1Pos1 Vec1Pos2 Vec1Pos3 Vec2Pos1 Vec2Pos2 Vec2Pos3 garagedoorname
+( garagedoorname is optional ( used for door system ) )
 
 ## Config:
 
-Most of the config is in the server file, pretty obv too, uh to change the client feedback color
-open the cl_reservablerooms.lua file, pretty self explanitory.
+Most of the config is in the server file, pretty obv too.
 
 ## Changelog
 
@@ -118,3 +105,5 @@ V17: Fixed some dumb things with some servers by setting a timer higher.
 V18: Remove useless arguement in checkRoomOwnerShip function, changed some variables to be more easily recognizable, and changed reserve notification to tell you how to interact with the door.
 
 V19: Updated !claim feedback to tell you the door is already locked
+
+V20: Complete recode, no need for map editing, use command to add rooms, switched to hints.

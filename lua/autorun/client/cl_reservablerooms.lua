@@ -1,5 +1,5 @@
-local rrColor = Color(255,0,255)
-
 net.Receive( "reservableRoomUserFeedBack", function()
-	chat.AddText( rrColor, "[ReservableRooms] ", Color( 255, 255, 255 ), net.ReadString() .. "." )
+	local rrReadString = net.ReadString()
+	print( rrReadString )
+	notification.AddLegacy( rrReadString, 0, 5 )
 end )
