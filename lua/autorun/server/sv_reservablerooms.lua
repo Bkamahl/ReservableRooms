@@ -4,7 +4,7 @@ local EnableReservableRooms = true
 
 if EnableReservableRooms == true then
 
-	local ReservableRoomsVersion = 20
+	local ReservableRoomsVersion = 21
 
 	local entsInRoom = 0
 
