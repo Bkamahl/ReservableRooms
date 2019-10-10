@@ -11,7 +11,7 @@ if EnableReservableRooms == true then
 	util.AddNetworkString( "reservableRoomUserFeedBack" )
 
 	local function checkRoomDoors()
-		local rooms = util.JSONToTable(file.Read ( "ReservableRooms/" .. game.GetMap() .. ".txt", "DATA" ))
+		local rooms = util.JSONToTable(file.Read ( "reservablerooms/" .. game.GetMap() .. ".txt", "DATA" ))
 
 		for k, v in pairs( rooms ) do
 			if v[8] then
@@ -30,7 +30,7 @@ if EnableReservableRooms == true then
 	end
 
 	concommand.Add( "addreservableroom", function( ply, cmd, args )
-		local rooms = util.JSONToTable(file.Read ( "ReservableRooms/" .. game.GetMap() .. ".txt", "DATA" ))
+		local rooms = util.JSONToTable(file.Read ( "reservablerooms/" .. game.GetMap() .. ".txt", "DATA" ))
 
 		if !IsValid(ply) then
 			local argsIsValidCount = 0
@@ -48,7 +48,7 @@ if EnableReservableRooms == true then
 					room = {args[1], args[2], args[3], args[4], args[5], args[6], args[7]}
 				end
 				table.insert(rooms, room)
-				file.Write( "ReservableRooms/" .. game.GetMap() .. ".txt", util.TableToJSON( rooms, false ) )
+				file.Write( "reservablerooms/" .. game.GetMap() .. ".txt", util.TableToJSON( rooms, false ) )
 
 				local reservableRoom = ents.Create( "reservableroom" )
 				reservableRoom:SetPos( Vector(0, 0, 0) )
@@ -79,7 +79,7 @@ if EnableReservableRooms == true then
 						room = {args[1], args[2], args[3], args[4], args[5], args[6], args[7]}
 					end
 					table.insert(rooms, room)
-					file.Write( "ReservableRooms/" .. game.GetMap() .. ".txt", util.TableToJSON( rooms, false ) )
+					file.Write( "reservablerooms/" .. game.GetMap() .. ".txt", util.TableToJSON( rooms, false ) )
 
 					local reservableRoom = ents.Create( "reservableroom" )
 					reservableRoom:SetPos( Vector(0, 0, 0) )
@@ -119,13 +119,13 @@ if EnableReservableRooms == true then
 				if roomExists then
 					print("You have removed the specified room.")
 					
-					local rooms = util.JSONToTable(file.Read ( "ReservableRooms/" .. game.GetMap() .. ".txt", "DATA" ))
+					local rooms = util.JSONToTable(file.Read ( "reservablerooms/" .. game.GetMap() .. ".txt", "DATA" ))
 					for k, v in pairs(rooms) do
 						if v[1] == args[1] then
 							rooms[k] = nil
 						end
 					end
-					file.Write( "ReservableRooms/" .. game.GetMap() .. ".txt", util.TableToJSON( rooms, false ) )
+					file.Write( "reservablerooms/" .. game.GetMap() .. ".txt", util.TableToJSON( rooms, false ) )
 				else
 					print("The specified room does not exist.")
 				end
@@ -148,13 +148,13 @@ if EnableReservableRooms == true then
 							net.WriteString( "You have removed the specified room." )
 						net.Send( ply )
 						
-						local rooms = util.JSONToTable(file.Read ( "ReservableRooms/" .. game.GetMap() .. ".txt", "DATA" ))
+						local rooms = util.JSONToTable(file.Read ( "reservablerooms/" .. game.GetMap() .. ".txt", "DATA" ))
 						for k, v in pairs(rooms) do
 							if v[1] == args[1] then
 								rooms[k] = nil
 							end
 						end
-						file.Write( "ReservableRooms/" .. game.GetMap() .. ".txt", util.TableToJSON( rooms, false ) )
+						file.Write( "reservablerooms/" .. game.GetMap() .. ".txt", util.TableToJSON( rooms, false ) )
 					else
 						net.Start( "reservableRoomUserFeedBack" )
 							net.WriteString( "The specified room does not exist." )
@@ -174,15 +174,15 @@ if EnableReservableRooms == true then
 	end)
 
 	local function checkDIR()
-		if  !file.Exists( "ReservableRooms/" .. game.GetMap() .. ".txt", "DATA" ) then
-			file.CreateDir( "ReservableRooms" )
+		if  !file.Exists( "reservablerooms/" .. game.GetMap() .. ".txt", "DATA" ) then
+			file.CreateDir( "reservablerooms" )
 			local rooms = {}
-			file.Write( "ReservableRooms/" .. game.GetMap() .. ".txt", util.TableToJSON( rooms, false ) )
+			file.Write( "reservablerooms/" .. game.GetMap() .. ".txt", util.TableToJSON( rooms, false ) )
 		end
 	end
 
 	local function createRooms()
-		local rooms = util.JSONToTable(file.Read ( "ReservableRooms/" .. game.GetMap() .. ".txt", "DATA" ))
+		local rooms = util.JSONToTable(file.Read ( "reservablerooms/" .. game.GetMap() .. ".txt", "DATA" ))
 
 		for k, v in pairs( rooms ) do
 			local reservableRoom = ents.Create( "reservableroom" )
