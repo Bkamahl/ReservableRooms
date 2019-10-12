@@ -110,3 +110,5 @@ V19: Updated !claim feedback to tell you the door is already locked
 V20: Complete recode, no need for map editing, use command to add rooms, switched to hints.
 
 V21: Fixed uppercase letters in dir so that GMod doesn't do big gey.
+
+V22: Added timer before calling functions to create rooms on server to see if this will fix a rare case, added removal or map created reservablerooms for previous users, and moved initpostentity hook to bottom to see if that will fix anything.

@@ -1,10 +1,8 @@
--- yes I know theres a more optimized way to do a lot of this stuff
-
 local EnableReservableRooms = true
 
 if EnableReservableRooms == true then
 
-	local ReservableRoomsVersion = 21
+	local ReservableRoomsVersion = 22
 
 	local entsInRoom = 0
 
@@ -192,12 +190,6 @@ if EnableReservableRooms == true then
 			reservableRoom:SetCollisionBounds( Vector( v[2], v[3], v[4] ) , Vector( v[5], v[6], v[7] ))
 		end
 	end
-	
-	hook.Add("InitPostEntity", "ReservableRoomsInitPostEntityHook", function()
-		checkDIR()
-		createRooms()
-		checkRoomDoors()
-	end)
 	
 	local function checkIfRoomIsClear( ply, id )
 		for k, v in pairs(ents.FindByClass("reservableroom")) do
@@ -446,6 +438,18 @@ if EnableReservableRooms == true then
 	
 	hook.Add( "PlayerDisconnected", "playerLeftUnReserveRoomHook", function( ply )
 		unclaimReservableRoom( ply )
+	end)
+	
+	hook.Add("InitPostEntity", "reservableRoomsInitPostEntityHook", function()
+		for k, v in pairs(ents.FindByClass("reservableroom")) do
+			v:Remove()
+		end
+		
+		timer.Simple( 10, function()
+			checkDIR()
+			createRooms()
+			checkRoomDoors()
+		end)
 	end)
 
 end
