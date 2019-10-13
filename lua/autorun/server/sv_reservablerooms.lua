@@ -2,7 +2,7 @@ local EnableReservableRooms = true
 
 if EnableReservableRooms == true then
 
-	local ReservableRoomsVersion = 22
+	local ReservableRoomsVersion = 23
 
 	local entsInRoom = 0
 
@@ -172,8 +172,10 @@ if EnableReservableRooms == true then
 	end)
 
 	local function checkDIR()
-		if  !file.Exists( "reservablerooms/" .. game.GetMap() .. ".txt", "DATA" ) then
-			file.CreateDir( "reservablerooms" )
+		if !file.Exists( "reservablerooms/" .. game.GetMap() .. ".txt", "DATA" ) then
+			if !file.Exists( "reservablerooms", "DATA" ) then
+				file.CreateDir( "reservablerooms" )
+			end
 			local rooms = {}
 			file.Write( "reservablerooms/" .. game.GetMap() .. ".txt", util.TableToJSON( rooms, false ) )
 		end
@@ -441,11 +443,10 @@ if EnableReservableRooms == true then
 	end)
 	
 	hook.Add("InitPostEntity", "reservableRoomsInitPostEntityHook", function()
-		for k, v in pairs(ents.FindByClass("reservableroom")) do
-			v:Remove()
-		end
-		
 		timer.Simple( 10, function()
+			for k, v in pairs(ents.FindByClass("reservableroom")) do
+				v:Remove()
+			end
 			checkDIR()
 			createRooms()
 			checkRoomDoors()
