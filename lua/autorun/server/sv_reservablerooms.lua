@@ -2,7 +2,7 @@ local EnableReservableRooms = true
 
 if EnableReservableRooms == true then
 
-	local ReservableRoomsVersion = 23
+	local ReservableRoomsVersion = 24
 
 	local entsInRoom = 0
 
@@ -443,14 +443,9 @@ if EnableReservableRooms == true then
 	end)
 	
 	hook.Add("InitPostEntity", "reservableRoomsInitPostEntityHook", function()
-		timer.Simple( 10, function()
-			for k, v in pairs(ents.FindByClass("reservableroom")) do
-				v:Remove()
-			end
-			checkDIR()
-			createRooms()
-			checkRoomDoors()
-		end)
+		checkDIR()
+		createRooms()
+		checkRoomDoors()
 	end)
 
 end
