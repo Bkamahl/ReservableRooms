@@ -42,7 +42,7 @@ Depends on the server.
  
 > What do I need to use this addon?
 
-A CPPI complient prop protection, and a setup map file.
+A CPPI complient prop protection.
 
 > Who made this addon?
 
@@ -59,13 +59,9 @@ Either make an issue on GitHub or contact me on Steam(id/Bkamahl).
 ## Instructions:
 
 In game, as an admin or super admin use the command "addreservableroom" to add a reservable room.
-The command arguements are addreservableroom ROOMNUMBER Vec1Pos1 Vec1Pos2 Vec1Pos3 Vec2Pos1 Vec2Pos2 Vec2Pos3 garagedoorname
+The command arguements are addreservableroom ROOMNUMBER Vec1Pos1 Vec1Pos2 Vec1Pos3 Vec2Pos1 Vec2Pos2 Vec2Pos3 garagedoorname(optional)
 ( garagedoorname is optional ( used for door system ) )
 And to remove a room the command is removereservableroom ROOMNUMBER
-
-## Config:
-
-Most of the config is in the server file, pretty obv too.
 
 ## Changelog
 
